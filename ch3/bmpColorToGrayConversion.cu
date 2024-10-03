@@ -125,8 +125,8 @@ int main() {
 
     cudaMemcpy(Pin_d, Pin.data(), rgbSize, cudaMemcpyHostToDevice);
 
-    dim3 blockSize(16, 16);
-    dim3 gridSize((width + blockSize.x - 1) / blockSize.x, (height + blockSize.y - 1) / blockSize.y);
+    dim3 blockSize(16, 16, 1);
+    dim3 gridSize(ceil(height / 16), ceil(width / 16), 1);
 
     colorToGrayscaleConversion << <gridSize, blockSize >> > (Pout_d, Pin_d, width, height, pitch);
 
