@@ -30,7 +30,7 @@ int main() {
 	float* N = (float*)malloc(row * col * sizeof(float));
 	float* P = (float*)malloc(col * row * sizeof(float));
 	int i = 0;
-	printf("En`ter values of MAt1 (row major)\n");
+	printf("Enter values of MAt1 (row major)\n");
 	for (i = 0; i < (row * col); ++i) {
 		std::cin >> M[i];
 	}
@@ -50,14 +50,17 @@ int main() {
 	cudaMemcpy(N_d, N, row * col * sizeof(float), cudaMemcpyHostToDevice);
 
 	dim3 gridSize(1, 1, 1);
-	dim3 blockSize(2, 2, 1);
+	dim3 blockSize(row, col, 1);
 
 	MatrixMulKernel << <gridSize, blockSize >> > (M_d, N_d, P_d, row);
 
 	cudaMemcpy(P, P_d, row * col * sizeof(float), cudaMemcpyDeviceToHost);
 
+	int counter = 0;
 	for (i = 0; i < (row * col); ++i) {
-		printf("%f ", P[i]);
+		printf("%.2f ", P[i]);
+		++counter;
+		if (counter % col == 0) printf("\n");
 	}
 
 	free(M);
